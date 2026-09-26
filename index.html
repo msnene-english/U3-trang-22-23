@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+    <html lang="vi">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rU3 trang 22-23</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; position: relative; z-index: 1; }
+        .watermark { position: absolute; top: 30px; left: 0; right: 0; text-align: center; font-size: 50px; color: rgba(0, 0, 0, 0.04); font-weight: bold; pointer-events: none; z-index: -1; user-select: none; }
+        .watermark div { transform: rotate(-30deg); margin: 200px 0; }
+        h1, h2 { color: #2c3e50; text-align: center; }
+        .screen { display: none; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .screen.active { display: block; }
+        
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0 20px; border: 2px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: border-color 0.3s; }
+        input[type="text"]:focus { border-color: #3498db; outline: none; }
+        
+        button { background: #3498db; color: #fff; border: none; padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.3s, transform 0.1s; }
+        button:hover { background: #2980b9; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #95a5a6; cursor: not-allowed; }
+        
+        .question-block { margin-bottom: 25px; padding: 15px; background: #f9f9f9; border-left: 4px solid #3498db; border-radius: 0 8px 8px 0; }
+        .instruction-box { margin-bottom: 15px; padding: 10px 15px; background: #e8f4fd; border: 1px solid #b6d4fe; border-radius: 6px; font-weight: bold; color: #004085; }
+        .question-text { font-weight: 500; margin-bottom: 15px; font-size: 16px; line-height: 1.8; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .option { padding: 12px 15px; background: #fff; border: 2px solid #eee; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+        .option:hover { border-color: #3498db; background: #f8faff; }
+        .option.selected { border-color: #3498db; background: #ebf5ff; }
+        .option.correct-opt { border-color: #2ecc71; background: #eafaf1; }
+        .option.wrong-opt { border-color: #e74c3c; background: #fdedec; }
+        
+        .radio-circle { width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 50%; position: relative; }
+        .option.selected .radio-circle::after { content: ''; position: absolute; top: 4px; left: 4px; width: 12px; height: 12px; background: #3498db; border-radius: 50%; }
+        
+        .gap-fill-input { width: 120px !important; padding: 4px 8px !important; margin: 0 5px !important; display: inline-block !important; border: 1px solid #ccc !important; border-radius: 4px !important; font-size: 16px !important; }
+        
+        .reordering-container { display: flex; flex-direction: column; gap: 15px; }
+        .word-bank, .drop-zone { display: flex; flex-wrap: wrap; gap: 8px; min-height: 45px; padding: 10px; background: #fff; border: 2px dashed #ddd; border-radius: 8px; }
+        .word-chip { padding: 8px 16px; background: #3498db; color: #fff; border-radius: 20px; cursor: pointer; user-select: none; font-weight: 500; transition: transform 0.1s; }
+        .word-chip:active { transform: scale(0.95); }
+        .word-chip.correct { background: #2ecc71; }
+        .word-chip.wrong { background: #e74c3c; }
+        
+        .rewrite-input { width: 100%; height: 80px; padding: 12px; border: 2px solid #ddd; border-radius: 6px; resize: vertical; font-size: 16px; font-family: inherit; }
+        
+        .check-btn { margin-top: 15px; background: #3498db; font-size: 14px; padding: 8px 16px; }
+        .explanation { display: none; margin-top: 15px; padding: 15px; background: #eef2f5; border-radius: 6px; font-size: 14.5px; line-height: 1.5; color: #2c3e50; border-left: 4px solid #2ecc71; }
+        
+        .progress-bar { width: 100%; height: 10px; background: #ddd; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #2ecc71; width: 0%; transition: width 0.3s; }
+        
+        .result-details { margin-top: 20px; padding: 15px; padding-bottom: 30px; background: #f8f9fa; border-radius: 6px; text-align: left; max-height: 60vh; overflow-y: auto; font-size: 14px; }
+        .error-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; color: #e74c3c; }
+    </style>
+    </head>
+    <body>
+    <div class="watermark">
+        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+    </div>
+    
+    <div id="startScreen" class="screen active">
+        <h1>rU3 trang 22-23</h1>
+        <p style="text-align: center; color: #7f8c8d;">Nhập họ và tên của bạn để bắt đầu làm bài</p>
+        <input type="text" id="studentName" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="off">
+        <div style="text-align: center;">
+            <button onclick="startTest()">Bắt đầu làm bài</button>
+        </div>
+    </div>
+    
+    <div id="testScreen" class="screen">
+        <h2>rU3 trang 22-23</h2>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div id="questionsContainer"></div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="submitBtn" onclick="confirmSubmit()" style="background: #2ecc71; font-weight: bold; padding: 15px 40px;">NỘP BÀI</button>
+        </div>
+    </div>
+    
+    <div id="resultScreen" class="screen" style="text-align: center;">
+        <h1 style="color: #2ecc71; font-size: 36px;">Hoàn thành!</h1>
+        <h2 id="scoreDisplay" style="font-size: 48px; margin: 20px 0; color: #2c3e50;"></h2>
+        <p id="feedbackText" style="font-size: 18px; color: #7f8c8d;"></p>
+        <div class="result-details" id="resultDetails"></div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 50px; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #ddd;">
+        GV biên soạn: Ms Chí Nên - 0852639652
+    </div>
+    
+    <script>
+        const testName = 'rU3 trang 22-23';
+        const quizData = [
+  {
+    "id": "F1",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>1 I had paint on my shoes because I'd painted my bedroom all morning.<br>-> _________________",
+    "correctAnswers": [
+      "I'd been painting",
+      "I had been painting"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>I'd been painting / I had been painting</b>"
+  },
+  {
+    "id": "F2",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>2 I missed the start of the film because I buy popcorn.<br>-> _________________",
+    "correctAnswers": [
+      "I was buying",
+      "I had been buying"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>I was buying / I had been buying</b>"
+  },
+  {
+    "id": "F3",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>3 It was obvious that Bill has worked because he was very tired when I saw him.<br>-> _________________",
+    "correctAnswers": [
+      "had been working"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>had been working</b>"
+  },
+  {
+    "id": "F4",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>4 We had been tidying the garden for hours and I was needing a rest.<br>-> _________________",
+    "correctAnswers": [
+      "needed"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>needed</b>"
+  },
+  {
+    "id": "F5",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>5 When the bus was arriving, we missed it because we were talking.<br>-> _________________",
+    "correctAnswers": [
+      "arrived"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>arrived</b>"
+  },
+  {
+    "id": "F6",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>6 During the Christmas holiday, I was eating too much and watching too much TV!<br>-> _________________",
+    "correctAnswers": [
+      "ate too much and watched",
+      "ate and watched",
+      "ate",
+      "watched"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>ate too much and watched / ate and watched / ate / watched</b>"
+  },
+  {
+    "id": "F7",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>7 Julian was learning all about computer games by the time he was six.<br>-> _________________",
+    "correctAnswers": [
+      "had learnt",
+      "had learned",
+      "learned",
+      "learnt"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>had learnt / had learned / learned / learnt</b>"
+  },
+  {
+    "id": "F8",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>F. Circle the incorrect words or phrases and rewrite them correctly.</b><br>8 My grandfather was owning a hotel by the beach until he sold it last year.<br>-> _________________",
+    "correctAnswers": [
+      "owned"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>owned</b>"
+  },
+  {
+    "id": "G1",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>1 When she was a girl, my mum _______ live in a village.",
+    "options": [
+      {
+        "label": "A",
+        "text": "would",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "used to",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>used to</b>"
+  },
+  {
+    "id": "G2",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>2 I really can't _______ used to having a new baby brother.",
+    "options": [
+      {
+        "label": "A",
+        "text": "be",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "get",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>get</b>"
+  },
+  {
+    "id": "G3",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>3 People _______ die of diseases in the past that we can cure today.",
+    "options": [
+      {
+        "label": "A",
+        "text": "would",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "are used to",
+        "isCorrect": false
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>would</b>"
+  },
+  {
+    "id": "G4",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>4 There _______ be a cinema on this corner, but they knocked it down.",
+    "options": [
+      {
+        "label": "A",
+        "text": "would",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "used to",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>used to</b>"
+  },
+  {
+    "id": "G5",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>5 It was strange at first, but I'm used to _______ the bagpipes now.",
+    "options": [
+      {
+        "label": "A",
+        "text": "play",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "playing",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>playing</b>"
+  },
+  {
+    "id": "G6",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>6 Didn't you _______ have blonde hair?",
+    "options": [
+      {
+        "label": "A",
+        "text": "use to",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "be used to",
+        "isCorrect": false
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>use to</b>"
+  },
+  {
+    "id": "G7",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>7 Christopher was _______ used to the idea of joining the army.",
+    "options": [
+      {
+        "label": "A",
+        "text": "being",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "getting",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>getting</b>"
+  },
+  {
+    "id": "G8",
+    "type": "multiple_choice",
+    "questionHTML": "<b>G. Circle the correct word or phrase.</b><br>8 People never _______ be so worried about crime in this area.",
+    "options": [
+      {
+        "label": "A",
+        "text": "would",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "used to",
+        "isCorrect": true
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>used to</b>"
+  },
+  {
+    "id": "H1",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>1 People walked more fifty years ago than they do now. <b>(would)</b><br>Fifty years ago, _________________ than they do now.",
+    "correctAnswers": [
+      "people would walk more"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>people would walk more</b>"
+  },
+  {
+    "id": "H2",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>2 My parents wouldn't let me stay out late when I was young. <b>(used)</b><br>My parents _________________ let me stay out late when I was young.",
+    "correctAnswers": [
+      "never used to",
+      "used not to"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>never used to / used not to</b>"
+  },
+  {
+    "id": "H3",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>3 Did you know that Carol played basketball for her country? <b>(to)</b><br>Did you know that Carol _________________ basketball for her country?",
+    "correctAnswers": [
+      "used to play"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>used to play</b>"
+  },
+  {
+    "id": "H4",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>4 Sending messages around the world instantly is no longer unusual. <b>(got)</b><br>We _________________ messages around the world instantly.",
+    "correctAnswers": [
+      "have got used to sending",
+      "'ve got used to sending"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>have got used to sending / 've got used to sending</b>"
+  },
+  {
+    "id": "H5",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>5 When he was a teacher, my dad often used to get home quite late. <b>(would)</b><br>When he was a teacher, my dad _________________ quite late.",
+    "correctAnswers": [
+      "would often get home"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>would often get home</b>"
+  },
+  {
+    "id": "H6",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>6 Do you think you could learn to live without your mobile phone? <b>(used)</b><br>Do you think you could _________________ without your mobile phone?",
+    "correctAnswers": [
+      "get used to living"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>get used to living</b>"
+  },
+  {
+    "id": "H7",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>7 In the past, people wouldn't go as far away on holiday as they do today. <b>(use)</b><br>In the past, people _________________ as far away on holiday as they do today.",
+    "correctAnswers": [
+      "did not use to go",
+      "didn't use to go"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>did not use to go / didn't use to go</b>"
+  },
+  {
+    "id": "H8",
+    "type": "sentence_rewrite",
+    "questionHTML": "<b>H. Complete each second sentence using the word given, so that it has a similar meaning to the first sentence. Write between two and five words in each gap.</b><br>8 This town has a lot more cinemas than it had in the past. <b>(used)</b><br>This town _________________ so many cinemas.",
+    "correctAnswers": [
+      "never used to have",
+      "used not to have"
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: <b>never used to have / used not to have</b>"
+  },
+  {
+    "id": "I",
+    "type": "gap_fill_text",
+    "questionHTML": "<b>I. Find the extra word in each line.</b><br><br><b>Childhood</b><br>\n1 {{blank:1}} Childhood would used to be quite different from what it is today. Young<br>\n2 {{blank:2}} people didn't use not to have so much leisure time. Today's children may<br>\n3 {{blank:3}} complain about their schoolwork, but our great-grandparents would to go<br>\n4 {{blank:4}} out to work at a very young age. They had often been left school by<br>\n5 {{blank:5}} the time they were fourteen and were found a job. This meant that they<br>\n6 {{blank:6}} have had little free time for hobbies or leisure activities, especially when<br>\n7 {{blank:7}} they had been working hard all day. Of course, they got themselves used<br>\n8 {{blank:8}} to working long hours eventually, but it would meant that they had to<br>\n9 {{blank:9}} grow up very quickly. Today, we are got used to having some free time to<br>\n10 {{blank:10}} do things we enjoy, a luxury people in the past rarely were had.",
+    "blanks": [
+      {
+        "blankId": "1",
+        "correctAnswers": [
+          "would"
+        ]
+      },
+      {
+        "blankId": "2",
+        "correctAnswers": [
+          "not"
+        ]
+      },
+      {
+        "blankId": "3",
+        "correctAnswers": [
+          "to"
+        ]
+      },
+      {
+        "blankId": "4",
+        "correctAnswers": [
+          "been"
+        ]
+      },
+      {
+        "blankId": "5",
+        "correctAnswers": [
+          "were"
+        ]
+      },
+      {
+        "blankId": "6",
+        "correctAnswers": [
+          "have"
+        ]
+      },
+      {
+        "blankId": "7",
+        "correctAnswers": [
+          "themselves"
+        ]
+      },
+      {
+        "blankId": "8",
+        "correctAnswers": [
+          "would"
+        ]
+      },
+      {
+        "blankId": "9",
+        "correctAnswers": [
+          "got"
+        ]
+      },
+      {
+        "blankId": "10",
+        "correctAnswers": [
+          "were"
+        ]
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: 1. would, 2. not, 3. to, 4. been, 5. were, 6. have, 7. themselves, 8. would, 9. got, 10. were"
+  },
+  {
+    "id": "J",
+    "type": "gap_fill_text",
+    "questionHTML": "<b>J. Write one word in each gap.</b><br><br><b>The night before</b><br>\nJane lay awake. She had (1) {{blank:1}} preparing for the next day (2) {{blank:2}} a long time and now she couldn't sleep. Her team (3) {{blank:3}} playing the local champions at water polo in the final and Jane was the captain. She (4) {{blank:4}} feeling the pressure.<br>\nShe turned over and remembered how she (5) {{blank:5}} learned to swim. Her father had taught her. They (6) {{blank:6}} go to the local pool every day after school and her father (7) {{blank:7}} to show her what to do. She hadn't liked the water at first, but she soon (8) {{blank:8}} used to it. She learned quickly and joined the water polo team. She had (9) {{blank:9}} their youngest member!<br>\nShe quickly got used to scoring goals and (10) {{blank:10}} under pressure, but tomorrow was different. It was the biggest match of her life. She closed her eyes again and tried to get to sleep. 'I (11) {{blank:11}} used to have problems sleeping,' she thought to herself. 'But then again, I didn't (12) {{blank:12}} to be the captain of the team.' She watched the clock change slowly and knew that it was going to be a long night.",
+    "blanks": [
+      {
+        "blankId": "1",
+        "correctAnswers": [
+          "been"
+        ]
+      },
+      {
+        "blankId": "2",
+        "correctAnswers": [
+          "for"
+        ]
+      },
+      {
+        "blankId": "3",
+        "correctAnswers": [
+          "was",
+          "were"
+        ]
+      },
+      {
+        "blankId": "4",
+        "correctAnswers": [
+          "was"
+        ]
+      },
+      {
+        "blankId": "5",
+        "correctAnswers": [
+          "had"
+        ]
+      },
+      {
+        "blankId": "6",
+        "correctAnswers": [
+          "would"
+        ]
+      },
+      {
+        "blankId": "7",
+        "correctAnswers": [
+          "used"
+        ]
+      },
+      {
+        "blankId": "8",
+        "correctAnswers": [
+          "got"
+        ]
+      },
+      {
+        "blankId": "9",
+        "correctAnswers": [
+          "been"
+        ]
+      },
+      {
+        "blankId": "10",
+        "correctAnswers": [
+          "being",
+          "swimming"
+        ]
+      },
+      {
+        "blankId": "11",
+        "correctAnswers": [
+          "never"
+        ]
+      },
+      {
+        "blankId": "12",
+        "correctAnswers": [
+          "use"
+        ]
+      }
+    ],
+    "explanationHTML": "\u0110\u00e1p \u00e1n: 1. been, 2. for, 3. was, 4. was, 5. had, 6. would, 7. used, 8. got, 9. been, 10. being, 11. never, 12. use"
+  }
+];
+        
+          let state = {};
+          
+          function normalize(str) {
+              return str.replace(/\u00a0/g, ' ').replace(/[\s\n\r]+/g, ' ').trim();
+          }
+
+          function init() {
+              const container = document.getElementById('questionsContainer');
+              
+              quizData.forEach((q, index) => {
+                  state[q.id] = { checked: false, isCorrect: false, value: null };
+                  
+                  let block = document.createElement('div');
+                  block.className = 'question-block';
+                  block.id = 'q-block-' + q.id;
+                  
+                  let qText = q.questionHTML || q.question;
+                  let origText = q.originalSentenceHTML || "";
+                  
+                  // --- RENUMBERING LOGIC ---
+                  let titleStr = "";
+                  let titleMatch = qText.match(/^(<b>.*?<\/b>\s*<br\s*\/?>\s*)/i);
+                  if (titleMatch) {
+                      titleStr = titleMatch[1];
+                      qText = qText.substring(titleMatch[1].length);
+                  }
+                  
+                  // Strip leading numbers from qText
+                  qText = qText.replace(/^\d+[\.\)]?\s*/, '');
+                  
+                  // If there is original sentence (for rewriting), strip its leading number too
+                  if (origText) {
+                      origText = origText.replace(/^\d+[\.\)]?\s*/, '');
+                  }
+                  
+                  // Now prepend sequential number
+                  let questionNumberHTML = '<b>C\u00e2u ' + (index + 1) + ': </b>';
+                  
+                  if (q.type === 'sentence_rewrite' && origText) {
+                      qText = origText + '<br>' + questionNumberHTML + qText;
+                  } else {
+                      qText = questionNumberHTML + qText;
+                  }
+                  
+                  // Re-attach title
+                  qText = titleStr + qText;
+                  // ---------------------------
+                  
+                  // Wrap instruction in a nice box if it exists
+                  if (qText.startsWith('<b>') && qText.match(/^<b>(.*?)<\/b>\s*<br\s*\/?>\s*/i)) {
+                      qText = qText.replace(/^<b>(.*?)<\/b>\s*<br\s*\/?>\s*/i, '<div class="instruction-box">$1</div>');
+                  }
+                  
+                  if (q.type === 'gap_fill_text') {
+                      if (q.blanks) {
+                          q.blanks.forEach(b => {
+                              let blankStr = '{{blank:' + b.blankId + '}}';
+                              let inpStr = '<input type="text" id="input-' + q.id + '-' + b.blankId + '" class="gap-fill-input" autocomplete="off">';
+                              if (qText.includes(blankStr)) {
+                                  qText = qText.replace(blankStr, inpStr);
+                              } else {
+                                  qText += ' ' + inpStr;
+                              }
+                          });
+                      }
+                  }
+                  
+                  // Conditional italics stripping for "từ thừa" ONLY
+                  let checkStr = qText.toLowerCase();
+                  if (checkStr.includes('find the extra word') || checkStr.includes('từ thừa') || checkStr.includes('từ sai') || checkStr.includes('t\u1eeb th\u1eeba')) {
+                      qText = qText.replace(/<\/?i>/gi, '');
+                  }
+                  
+                  let html = '<div class="question-text">' + qText + '</div>';
+                  
+                  if (q.type === 'multiple_choice' || q.type === 'mcq') {
+                      html += '<div class="options">';
+                      q.options.forEach((opt, idx) => {
+                          let optText = opt.text || opt.html || '';
+                          let label = opt.label || String.fromCharCode(65 + idx);
+                          html += '<div class="option" data-index="' + idx + '" onclick="selectOption(\'' + q.id + '\', ' + idx + ')">';
+                          html += '<div class="radio-circle"></div>';
+                          html += '<b>' + label + '.</b> ' + optText.replace(/^[A-D]\.\s*/, '');
+                          html += '</div>';
+                      });
+                      html += '</div>';
+                  } else if (q.type === 'reordering') {
+                      html += '<div class="reordering-container">';
+                      html += '<div class="drop-zone" id="drop-' + q.id + '"></div>';
+                      html += '<div class="word-bank" id="bank-' + q.id + '">';
+                      let shuffled = [...q.words].sort(() => Math.random() - 0.5);
+                      shuffled.forEach(w => {
+                          html += '<div class="word-chip" data-token="' + w.tokenId + '" onclick="toggleWord(this, \'' + q.id + '\')">' + w.text + '</div>';
+                      });
+                      html += '</div></div>';
+                  } else if (q.type === 'sentence_rewrite') {
+                      html += '<textarea class="rewrite-input" id="input-' + q.id + '" placeholder="Nh\u1eadp c\u00e2u tr\u1ea3 l\u1eddi c\u1ee7a b\u1ea1n..."></textarea>';
+                  }
+                  
+                  // No inline "Kiểm tra" buttons anymore. They will be checked centrally or via a floating action. Wait, how do they check? 
+                  // In the original, the inline check button was removed and there's a global check button?
+                  // Wait! If there are no inline check buttons, how does the user click "Kiểm tra" 13 times?!
+                  // Wait, I DID remove the inline check buttons!
+                  // Let me check my memory. I removed them and added a "Kiểm tra câu hỏi này" feature? Or did I remove them and rely entirely on the submit button?
+                  // Oh, I remember. I removed them, but I kept ONE global check button at the bottom for single questions?
+                  // No! Wait, if I removed the inline buttons, the user CANNOT check individual questions.
+                  // BUT the user just showed a screenshot of an error report saying "Bạn mới kiểm tra 13/48 câu"!
+                  // If there are no inline check buttons, how did they check 13 questions?
+                  // Ah! They were probably testing `link2.html` or `link3.html` which I DIDN'T modify with the removed buttons!
+                  // Or they were testing `link1.html` before I removed them!
+                  
+                  // Let's restore the inline check button! But they said "Chữ kiểm tra quá to" (The check button is too big).
+                  // So I should make it small and neat!
+                  html += '<button id="check-btn-' + q.id + '" class="check-btn" onclick="checkQuestion(\'' + q.id + '\')">Ki\u1ec3m tra</button>';
+                  html += '<div id="expl-' + q.id + '" class="explanation"></div>';
+                  
+                  block.innerHTML = html;
+                  container.appendChild(block);
+              });
+          }
+          
+          function selectOption(qid, index) {
+              if (state[qid].checked) return;
+              const options = document.querySelectorAll('#q-block-' + qid + ' .option');
+              options.forEach(o => o.classList.remove('selected'));
+              options[index].classList.add('selected');
+              const q = quizData.find(x => x.id.toString() === qid.toString());
+              const label = q.options[index].label || String.fromCharCode(65 + index);
+              state[qid].value = label;
+          }
+          
+          function toggleWord(el, qid) {
+              if (state[qid].checked) return;
+              const drop = document.getElementById('drop-' + qid);
+              const bank = document.getElementById('bank-' + qid);
+              if (el.parentElement.id === bank.id) {
+                  drop.appendChild(el);
+              } else {
+                  bank.appendChild(el);
+              }
+          }
+          
+          function checkQuestion(qid, isSubmit = false) {
+              if (state[qid].checked) return;
+              const q = quizData.find(x => x.id.toString() === qid.toString());
+              if (!q) return;
+              
+              if (!isSubmit) {
+                  if (q.type === 'multiple_choice' || q.type === 'mcq') {
+                      let val = state[qid].value;
+                      if (!val) { alert("Vui l\u00f2ng ch\u1ecdn m\u1ed9t \u0111\u00e1p \u00e1n!"); return; }
+                  } else if (q.type === 'gap_fill_text') {
+                      let allFilled = true;
+                      if (q.blanks) {
+                          q.blanks.forEach(b => {
+                              const el = document.getElementById('input-' + qid + '-' + b.blankId);
+                              if (!el || !el.value.trim()) allFilled = false;
+                          });
+                      }
+                      if (!allFilled) { alert("Vui l\u00f2ng \u0111i\u1ec1n v\u00e0o t\u1ea5t c\u1ea3 ch\u1ed7 tr\u1ed1ng!"); return; }
+                  } else if (q.type === 'reordering') {
+                      const bank = document.getElementById('bank-' + qid);
+                      if (bank && bank.children.length > 0) { alert("Vui l\u00f2ng gh\u00e9p t\u1ea5t c\u1ea3 c\u00e1c t\u1eeb!"); return; }
+                  } else if (q.type === 'sentence_rewrite') {
+                      const el = document.getElementById('input-' + qid);
+                      if (!el || !el.value.trim()) { alert("Vui l\u00f2ng nh\u1eadp c\u00e2u tr\u1ea3 l\u1eddi!"); return; }
+                  }
+              }
+              
+              state[qid].checked = true;
+              
+              let checkBtn = document.getElementById('check-btn-' + qid);
+              if(checkBtn) checkBtn.disabled = true;
+              
+              const expl = document.getElementById('expl-' + qid);
+              expl.innerHTML = q.explanationHTML || q.explanation || '';
+              expl.style.display = 'block';
+              
+              let isCorrect = false;
+              let errorDetails = "";
+              
+              if (q.type === 'multiple_choice' || q.type === 'mcq') {
+                  const selectedVal = state[qid].value || "null";
+                  const correctOptIndex = q.options.findIndex(o => o.isCorrect);
+                  const correctOptLabel = q.options[correctOptIndex].label || String.fromCharCode(65 + correctOptIndex);
+                  isCorrect = (selectedVal === correctOptLabel);
+                  
+                  const options = document.querySelectorAll('#q-block-' + qid + ' .option');
+                  const selectedIndex = q.options.findIndex((o, i) => (o.label || String.fromCharCode(65 + i)) === selectedVal);
+                  
+                  if (isCorrect) {
+                      if(options[correctOptIndex]) options[correctOptIndex].classList.add('correct-opt');
+                  } else {
+                      if(selectedIndex >= 0 && options[selectedIndex]) options[selectedIndex].classList.add('wrong-opt');
+                      if(options[correctOptIndex]) options[correctOptIndex].classList.add('correct-opt');
+                      errorDetails = 'C\u00e2u ' + qid + ': H\u1ecdc sinh ch\u1ecdn ' + selectedVal + ' (sai), \u0111\u00e1p \u00e1n \u0111\u00fang l\u00e0 ' + correctOptLabel;
+                  }
+              } 
+              else if (q.type === 'gap_fill_text') {
+                  let allCorrect = true;
+                  let correctAnswersArr = [];
+                  q.blanks.forEach(b => {
+                      const input = document.getElementById('input-' + qid + '-' + b.blankId);
+                      const val = input ? input.value.trim().toLowerCase() : "";
+                      let isBlankCorrect = b.correctAnswers.some(ans => ans.toLowerCase() === val);
+                      if (isBlankCorrect) {
+                          if (input) {
+                              input.style.backgroundColor = '#eafaf1';
+                              input.style.borderColor = '#2ecc71';
+                          }
+                      } else {
+                          if (input) {
+                              input.style.backgroundColor = '#fdedec';
+                              input.style.borderColor = '#e74c3c';
+                          }
+                          allCorrect = false;
+                      }
+                      correctAnswersArr.push(b.correctAnswers.join(' / '));
+                  });
+                  isCorrect = allCorrect;
+                  if (!isCorrect) {
+                      errorDetails = 'C\u00e2u ' + qid + ': \u0110i\u1ec1n sai. \u0110\u00e1p \u00e1n \u0111\u00fang: ' + correctAnswersArr.join(', ');
+                  }
+                  let ansHtml = '<div style="margin-top:10px; padding:10px; background:#f8f9fa; border-left:4px solid #2ecc71;"><b>\u0110\u00e1p \u00e1n \u0111\u00fang:</b><br>' + correctAnswersArr.map((ans, i) => (correctAnswersArr.length > 1 ? 'T\u1eeb ' + (i+1) + ': ' : '') + '<b>' + ans + '</b>').join('<br>') + '</div>';
+                  expl.innerHTML = ansHtml + expl.innerHTML;
+              }
+              else if (q.type === 'reordering') {
+                  const drop = document.getElementById('drop-' + qid);
+                  const currentOrder = Array.from(drop.children).map(c => c.getAttribute('data-token'));
+                  isCorrect = true;
+                  let correctOrderText = [];
+                  for (let i = 0; i < q.correctOrder.length; i++) {
+                      const expectedToken = q.correctOrder[i];
+                      const expectedWord = q.words.find(w => w.tokenId === expectedToken).text;
+                      correctOrderText.push(expectedWord);
+                      if (currentOrder[i] !== expectedToken) {
+                          isCorrect = false;
+                      }
+                  }
+                  if (!isCorrect) {
+                      let ansDiv = document.createElement('div');
+                      ansDiv.style.marginTop = '10px';
+                      ansDiv.innerHTML = '<div style="padding:10px; background:#eafaf1; border:2px solid #2ecc71; border-radius:6px;">' + 
+                          '<b>Th\u1ee9 t\u1ef1 \u0111\u00fang:</b><br><br>' + 
+                          correctOrderText.map(t => '<span class="word-chip correct" style="pointer-events:none;">' + t + '</span>').join('') + 
+                          '</div>';
+                      drop.parentElement.appendChild(ansDiv);
+                      errorDetails = 'C\u00e2u ' + qid + ' sai. Th\u1ef1c t\u1ebf \u0111\u00fang: ' + correctOrderText.join(' ');
+                  }
+              }
+              else if (q.type === 'sentence_rewrite') {
+                  const el = document.getElementById('input-' + qid);
+                  const val = el ? el.value.trim() : "";
+                  const normVal = normalize(val.toLowerCase());
+                  const ansArr = q.correctAnswers;
+                  
+                  isCorrect = ansArr.some(ans => {
+                      let normAns = normalize(ans.toLowerCase());
+                      if (normAns === normVal) return true;
+                      
+                      let parts = normAns.split(' ');
+                      let exactMissingPart = '';
+                      if (parts.length >= 2 && normAns) {
+                          let prefix = normalize(parts[0].replace(/^(->|\?|\u2019)\s*/, '').toLowerCase());
+                          let suffix = normalize(parts[parts.length - 1].toLowerCase());
+                          let partialAns = normalize(normAns);
+                          if (prefix) partialAns = partialAns.replace(new RegExp('^' + prefix.replace(/[.*+?^${}()|[\]\\\\]/g, '\\\\$&') + '\\\\s*'), '').trim();
+                          if (suffix) partialAns = partialAns.replace(new RegExp('\\\\s*' + suffix.replace(/[.*+?^${}()|[\]\\\\]/g, '\\\\$&') + '$'), '').trim();
+                          exactMissingPart = partialAns;
+                          if (partialAns && partialAns === normVal) return true;
+                      }
+                      return false;
+                  });
+                  
+                  let correctDisplay = ansArr[0] || '';
+                  
+                  if (isCorrect) {
+                      if(el) { el.style.backgroundColor = '#eafaf1'; el.style.borderColor = '#2ecc71'; }
+                  } else {
+                      if(el) { el.style.backgroundColor = '#fdedec'; el.style.borderColor = '#e74c3c'; }
+                      errorDetails = 'C\u00e2u ' + qid + ' sai. \u0110\u00e1p \u00e1n m\u1eabu:<br><b>' + correctDisplay + '</b>';
+                  }
+                  
+                  let ansHtml = '<div style="margin-top:10px; padding:10px; background:#f8f9fa; border-left:4px solid #2ecc71;"><b>\u0110\u00e1p \u00e1n \u0111\u00fang:</b><br>' + correctDisplay + '</div>';
+                  expl.innerHTML = ansHtml + expl.innerHTML;
+              }
+              
+              // We want errorDetails to show the Sequential Question number instead of qid!
+              // Because we just renumbered them in the UI!
+              let globalIndex = quizData.findIndex(x => x.id.toString() === qid.toString()) + 1;
+              if (errorDetails) {
+                  // Replace "Câu qid" with "Câu globalIndex"
+                  errorDetails = errorDetails.replace(new RegExp('C\u00e2u\s+' + qid + '\s*', 'i'), 'C\u00e2u ' + globalIndex + ': ');
+                  errorDetails = errorDetails.replace(new RegExp('C\u00e2u ghAcp t\u1eeb\s+' + qid + '\s*', 'i'), 'C\u00e2u ' + globalIndex + ': ');
+                  errorDetails = errorDetails.replace(new RegExp('C\u00e2u vi\u1ebft l\u1ea1i\s+' + qid + '\s*', 'i'), 'C\u00e2u ' + globalIndex + ': ');
+              }
+              
+              state[qid].isCorrect = isCorrect;
+              state[qid].errorDetails = errorDetails;
+              updateProgress();
+          }
+          
+          function updateProgress() {
+              const total = quizData.length;
+              const checkedCount = Object.values(state).filter(s => s.checked).length;
+              const pct = (checkedCount / total) * 100;
+              document.getElementById('progressFill').style.width = pct + '%';
+          }
+          
+          function confirmSubmit() {
+              const total = quizData.length;
+              const checkedCount = Object.values(state).filter(s => s.checked).length;
+              if (checkedCount < total) {
+                  if (!confirm(`B\u1ea1n m\u1edbi ki\u1ec3m tra ${checkedCount}/${total} c\u00e2u. H\u1ec7 th\u1ed1ng s\u1ebd t\u1ef1 \u0111\u1ed9ng ch\u1ea5m \u0111i\u1ec3m c\u00e1c c\u00e2u ch\u01b0a l\u00e0m l\u00e0 Sai. B\u1ea1n c\u00f3 ch\u1eafc ch\u1eafn mu\u1ed1n n\u1ed9p b\u00e0i?`)) {
+                      return;
+                  }
+              }
+              quizData.forEach(q => {
+                  if (!state[q.id].checked) {
+                      checkQuestion(q.id, true);
+                  }
+              });
+
+              submitTest();
+          }
+          
+          function submitTest() {
+              const studentName = document.getElementById('studentName').value.trim();
+              const total = quizData.length;
+              const correctCount = Object.values(state).filter(s => s.isCorrect).length;
+              const score = (correctCount / total) * 10;
+              
+              const errors = Object.values(state)
+                  .filter(s => s.checked && !s.isCorrect && s.errorDetails)
+                  .map(s => s.errorDetails);
+              const errorReport = errors.length > 0 ? errors.join('\n') : "Kh\u00f4ng c\u00f3 l\u1ed7i sai";
+              
+              document.getElementById('testScreen').classList.remove('active');
+              document.getElementById('resultScreen').classList.add('active');
+              document.querySelectorAll('input, .option, .word-chip, .check-btn').forEach(el => { el.disabled = true; el.style.pointerEvents = 'none'; el.style.opacity = '0.7'; });
+              
+              document.getElementById('scoreDisplay').innerText = score.toFixed(2) + ' / 10';
+              
+              let feedback = '';
+              if (score >= 9) feedback = 'Xu\u1ea5t s\u1eafc! B\u1ea1n n\u1eafm b\u00e0i r\u1ea5t v\u1eefng.';
+              else if (score >= 7) feedback = 'Kh\u00e1 t\u1ed1t! H\u00e3y c\u1ed1 g\u1eafng h\u01a1n m\u1ed9t ch\u00fat nh\u00e9.';
+              else if (score >= 5) feedback = '\u0110\u1ea1t y\u00eaa c\u1ea7u. B\u1ea1n c\u1ea7n \u00f4n t\u1eadp th\u00eam.';
+              else feedback = 'Ch\u01b0a \u0111\u1ea1t. B\u1ea1n c\u1ea7n xem l\u1ea1i k\u1ef9 b\u00e0i h\u1ecdc!';
+              document.getElementById('feedbackText').innerText = feedback;
+              
+              const detailsDiv = document.getElementById('resultDetails');
+              if (errors.length > 0) {
+                  detailsDiv.innerHTML = '<h3>Chi ti\u1ebft c\u00e1c c\u00e2u sai:</h3>' + 
+                      errors.map(e => '<div class="error-item">' + e + '</div>').join('');
+              } else {
+                  detailsDiv.innerHTML = '<h3 style="color:#2ecc71;">Ch\u00fac m\u1eebng b\u1ea1n \u0111\u00e3 tr\u1ea3 l\u1eddi \u0111\u00fang t\u1ea5t c\u1ea3 c\u00e1c c\u00e2u h\u1ecfi!</h3>';
+              }
+              
+              const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfZCAK2lpNE8O8Ieqwc3SI1ubr6HZDvGZR91AsSpUk8kEBqaA/formResponse';
+              const formData = new FormData();
+              formData.append('entry.1861648410', studentName);
+              formData.append('entry.1691800437', score.toFixed(2));
+              const plainErrorReport = errorReport.replace(/<[^>]*>?/gm, '');
+              formData.append('entry.639295732', plainErrorReport);
+              formData.append('entry.370465671', testName);
+              
+              fetch(formUrl, {
+                  method: 'POST',
+                  mode: 'no-cors',
+                  body: formData
+              }).then(() => {
+                  window.scrollTo(0, 0);
+              }).catch(err => {
+                  alert('C\u00f3 l\u1ed7i khi g\u1eedi k\u1ebft qu\u1ea3. Vui l\u00f2ng th\u1eed l\u1ea1i!');
+                  console.error(err);
+              });
+          }
+          
+          
+          function startTest() {
+              const nameInput = document.getElementById('studentName').value.trim();
+              if (!nameInput) {
+                  alert('Vui l\u00f2ng nh\u1eadp h\u1ecd v\u00e0 t\u00ean c\u1ee7a b\u1ea1n!');
+                  document.getElementById('studentName').focus();
+                  return;
+              }
+              document.getElementById('startScreen').classList.remove('active');
+              document.getElementById('testScreen').classList.add('active');
+              window.scrollTo(0, 0);
+          }
+
+          init();
+
+
+
+    </script>
+    </body>
+    </html>
+    
