@@ -3,7 +3,7 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>rU3 trang 22-23</title>
+    <title>U3 trang 22-23</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; position: relative; z-index: 1; }
         .watermark { position: absolute; top: 30px; left: 0; right: 0; text-align: center; font-size: 50px; color: rgba(0, 0, 0, 0.04); font-weight: bold; pointer-events: none; z-index: -1; user-select: none; }
@@ -57,10 +57,10 @@
     </head>
     <body>
     <div class="watermark">
-        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
-        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
-        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
-        <div>rU3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>U3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>U3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>U3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
+        <div>U3 trang 22-23<br>GV biên soạn: Ms Chí Nên - 0852639652</div>
     </div>
     
     <div id="startScreen" class="screen active">
@@ -729,7 +729,7 @@
               let errorDetails = "";
               
               if (q.type === 'multiple_choice' || q.type === 'mcq') {
-                  const selectedVal = state[qid].value || "null";
+                  const selectedVal = state[qid].value || "(bỏ trống)";
                   const correctOptIndex = q.options.findIndex(o => o.isCorrect);
                   const correctOptLabel = q.options[correctOptIndex].label || String.fromCharCode(65 + correctOptIndex);
                   isCorrect = (selectedVal === correctOptLabel);
